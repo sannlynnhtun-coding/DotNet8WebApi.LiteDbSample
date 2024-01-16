@@ -3,7 +3,7 @@ using LiteDB;
 
 namespace DotNet8WebApi.LiteDbSample.Services
 {
-    public class LiteDbService
+    public class LiteDbService:IDisposable
     {
         private readonly LiteDatabase _liteDatabase;
         private readonly string _filePath;

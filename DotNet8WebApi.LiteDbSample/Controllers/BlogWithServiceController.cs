@@ -22,7 +22,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         public IActionResult Get()
         {
             var lst = _liteDbService.Blog.FindAll().ToList();
-            _liteDbService.Dispose();
+            //_liteDbService.Dispose();
             return Ok(lst);
         }
 
@@ -30,7 +30,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         public IActionResult GetById(string id)
         {
             var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
-            _liteDbService.Dispose();
+            //_liteDbService.Dispose();
             return Ok(item);
         }
 
@@ -45,7 +45,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 BlogContent = "LiteDb",
             };
             _liteDbService.Blog.Insert(newBlog);
-            _liteDbService.Dispose();
+            //_liteDbService.Dispose();
             return Ok(newBlog);
         }
 
@@ -59,7 +59,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             item.BlogContent = reqModel.BlogContent;
 
             var result = _liteDbService.Blog.Update(item);
-            _liteDbService.Dispose();
+            //_liteDbService.Dispose();
             return Ok();
         }
 
@@ -83,7 +83,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             //}
 
             var result = _liteDbService.Blog.Update(item);
-            _liteDbService.Dispose();
+            //_liteDbService.Dispose();
 
             return Ok();
         }
@@ -93,7 +93,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         {
             var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
             var result = _liteDbService.Blog.Delete(item.Id);
-            _liteDbService.Dispose();
+            //_liteDbService.Dispose();
             return Ok();
         }
     }
