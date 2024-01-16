@@ -8,35 +8,44 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogWithServiceController : ControllerBase
+    public class BlogV1Controller : ControllerBase
     {
-        private readonly LiteDbService _liteDbService;
-
-        public BlogWithServiceController(LiteDbService liteDbService)
+        private readonly string _filePath;
+        private readonly string _folderPath;
+        public BlogV1Controller()
         {
-            _liteDbService = liteDbService;
+            _folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiteDb");
+            Directory.CreateDirectory(_folderPath);
+
+            _filePath = Path.Combine(_folderPath, "Blog.db");
         }
 
         [Route("Get")]
         [HttpGet]
         public IActionResult Get()
         {
-            var lst = _liteDbService.Blog.FindAll().ToList();
-            //_liteDbService.Dispose();
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var lst = collection.FindAll().ToList();
+            db.Dispose();
             return Ok(lst);
         }
 
         [HttpGet("Id")]
         public IActionResult GetById(string id)
         {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
-            //_liteDbService.Dispose();
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
+            db.Dispose();
             return Ok(item);
         }
 
         [HttpPost]
         public IActionResult Create()
         {
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
             var newBlog = new BlogModel
             {
                 BlogId = Ulid.NewUlid().ToString(),
@@ -44,29 +53,34 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 BlogAuthor = "LiteDb",
                 BlogContent = "LiteDb",
             };
-            _liteDbService.Blog.Insert(newBlog);
-            //_liteDbService.Dispose();
+            collection.Insert(newBlog);
+            db.Dispose();
             return Ok(newBlog);
         }
 
         [HttpPut]
         public IActionResult Put(string id, BlogModel reqModel)
         {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
+
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
 
             item.BlogTitle = reqModel.BlogTitle;
             item.BlogAuthor = reqModel.BlogAuthor;
             item.BlogContent = reqModel.BlogContent;
 
-            var result = _liteDbService.Blog.Update(item);
-            //_liteDbService.Dispose();
+            var result = collection.Update(item);
+            db.Dispose();
             return Ok();
         }
 
         [HttpPatch]
         public IActionResult Patch(string id, BlogRequestModel reqModel)
         {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
             if (!string.IsNullOrEmpty(reqModel.BlogTitle))
             {
                 item.BlogTitle = reqModel.BlogTitle;
@@ -82,8 +96,8 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             //    item.BlogContent = reqModel.BlogContent;
             //}
 
-            var result = _liteDbService.Blog.Update(item);
-            //_liteDbService.Dispose();
+            var result = collection.Update(item);
+            db.Dispose();
 
             return Ok();
         }
@@ -91,9 +105,11 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         [HttpDelete]
         public IActionResult Delete(string id)
         {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
-            var result = _liteDbService.Blog.Delete(item.Id);
-            //_liteDbService.Dispose();
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
+            var result = collection.Delete(item.Id);
+            db.Dispose();
             return Ok();
         }
     }

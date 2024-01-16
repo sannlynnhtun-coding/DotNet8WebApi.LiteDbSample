@@ -3,12 +3,12 @@ using LiteDB;
 
 namespace DotNet8WebApi.LiteDbSample.Services
 {
-    public class LiteDbService:IDisposable
+    public class LiteDbV2Service:IDisposable
     {
         private readonly LiteDatabase _liteDatabase;
         private readonly string _filePath;
         private readonly string _folderPath;
-        public LiteDbService()
+        public LiteDbV2Service()
         {
             _folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiteDb");
             Directory.CreateDirectory(_folderPath);
