@@ -1,0 +1,6 @@
+@DotNet8WebApi.LiteDbSample_HostAddress = http://localhost:5139
+
+GET {{DotNet8WebApi.LiteDbSample_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
