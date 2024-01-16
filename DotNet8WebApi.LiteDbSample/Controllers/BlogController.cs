@@ -26,7 +26,17 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             var db = new LiteDatabase(_filePath);
             var collection = db.GetCollection<BlogModel>("Blog");
             var lst = collection.FindAll().ToList();
+            db.Dispose();
             return Ok(lst);
+        }
+        [HttpGet("Id")]
+        public IActionResult GetById(string id)
+        {
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
+            db.Dispose();
+            return Ok(item);
         }
 
         [HttpPost]
@@ -34,32 +44,70 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         {
             var db = new LiteDatabase(_filePath);
             var collection = db.GetCollection<BlogModel>("Blog");
-            var result = collection.Insert(new BlogModel
+            var newBlog = new BlogModel
             {
                 BlogId = Ulid.NewUlid().ToString(),
                 BlogTitle = "LiteDb",
                 BlogAuthor = "LiteDb",
                 BlogContent = "LiteDb",
-            });
-
-            return Ok(result);
+            };
+            collection.Insert(newBlog);
+            db.Dispose();
+            return Ok(newBlog);
         }
 
         [HttpPut]
-        public IActionResult Put()
+        public IActionResult Put(string id, BlogModel reqModel)
         {
+
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
+
+            item.BlogTitle = reqModel.BlogTitle;
+            item.BlogAuthor = reqModel.BlogAuthor;
+            item.BlogContent = reqModel.BlogContent;
+
+            var result = collection.Update(item);
+            db.Dispose();
             return Ok();
         }
 
         [HttpPatch]
-        public IActionResult Patch()
+        public IActionResult Patch(string id, BlogRequestModel reqModel)
         {
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
+            if (!string.IsNullOrEmpty(reqModel.BlogTitle))
+            {
+                item.BlogTitle = reqModel.BlogTitle;
+            }
+
+            //if (!string.IsNullOrEmpty(reqModel.BlogAuthor))
+            //{
+            //    item.BlogAuthor = reqModel.BlogAuthor;
+            //}
+
+            //if (!string.IsNullOrEmpty(reqModel.BlogContent))
+            //{
+            //    item.BlogContent = reqModel.BlogContent;
+            //}
+
+            var result = collection.Update(item);
+            db.Dispose();
+
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete()
+        public IActionResult Delete(string id)
         {
+            var db = new LiteDatabase(_filePath);
+            var collection = db.GetCollection<BlogModel>("Blog");
+            var item = collection.Find(x => x.BlogId == id).FirstOrDefault();
+            var result = collection.Delete(item.Id);
+            db.Dispose();
             return Ok();
         }
     }
