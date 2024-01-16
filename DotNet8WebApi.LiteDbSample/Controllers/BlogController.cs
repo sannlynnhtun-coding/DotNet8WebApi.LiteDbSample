@@ -9,11 +9,21 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
     [ApiController]
     public class BlogController : ControllerBase
     {
+        private readonly string _filePath;
+        private readonly string _folderPath;
+        public BlogController()
+        {
+            _folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiteDb");
+            Directory.CreateDirectory(_folderPath);
+
+            _filePath = Path.Combine(_folderPath, "Blog.db");
+        }
+
         [Route("Get")]
         [HttpGet]
         public IActionResult Get()
         {
-            var db = new LiteDatabase(@"LiteDb\Blog.db");
+            var db = new LiteDatabase(_filePath);
             var collection = db.GetCollection<BlogModel>("Blog");
             var lst = collection.FindAll().ToList();
             return Ok(lst);
@@ -22,7 +32,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         [HttpPost]
         public IActionResult Create()
         {
-            var db = new LiteDatabase(@"LiteDb\Blog.db");
+            var db = new LiteDatabase(_filePath);
             var collection = db.GetCollection<BlogModel>("Blog");
             var result = collection.Insert(new BlogModel
             {
