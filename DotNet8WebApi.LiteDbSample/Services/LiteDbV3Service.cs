@@ -3,11 +3,11 @@ using System.Linq.Expressions;
 
 namespace DotNet8WebApi.LiteDbSample.Services;
 
-public class QuickLiteDB
+public class LiteDbV3Service
 {
     private readonly LiteDatabase _db;
 
-    public QuickLiteDB(LiteDatabase db)
+    public LiteDbV3Service(LiteDatabase db)
     {
         _db = db;
     }

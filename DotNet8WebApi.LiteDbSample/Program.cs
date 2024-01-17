@@ -20,18 +20,9 @@ builder.Services.AddScoped(n =>
     return new LiteDatabase(_filePath);
 });
 
-builder.Services.AddScoped(n=>
-{
-    var _folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiteDb");
-    Directory.CreateDirectory(_folderPath);
-
-    var _filePath = Path.Combine(_folderPath, "Catalog.db");
-    return new LiteDatabase(_filePath);
-});
-
 builder.Services.AddScoped<LiteDbV2Service>();
 
-builder.Services.AddScoped<QuickLiteDB>();
+builder.Services.AddScoped<LiteDbV3Service>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

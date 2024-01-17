@@ -9,10 +9,10 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
     [ApiController]
     public class BlogV3Controller : ControllerBase
     {
-        private readonly QuickLiteDB _quickLiteDB;
+        private readonly LiteDbV3Service _quickLiteDB;
         private readonly string _tablename = "Blog";
 
-        public BlogV3Controller(QuickLiteDB quickLiteDB)
+        public BlogV3Controller(LiteDbV3Service quickLiteDB)
         {
             _quickLiteDB = quickLiteDB;
         }
