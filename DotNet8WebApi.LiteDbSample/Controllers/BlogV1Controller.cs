@@ -20,7 +20,6 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             _filePath = Path.Combine(_folderPath, "Blog.db");
         }
 
-        [Route("Get")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -31,7 +30,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             return Ok(lst);
         }
 
-        [HttpGet("Id")]
+        [HttpGet("{id}")]
         public IActionResult GetById(string id)
         {
             var db = new LiteDatabase(_filePath);
@@ -58,7 +57,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             return Ok(newBlog);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Put(string id, BlogModel reqModel)
         {
 
@@ -75,7 +74,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             return Ok();
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         public IActionResult Patch(string id, BlogRequestModel reqModel)
         {
             var db = new LiteDatabase(_filePath);
@@ -86,15 +85,15 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 item.BlogTitle = reqModel.BlogTitle;
             }
 
-            //if (!string.IsNullOrEmpty(reqModel.BlogAuthor))
-            //{
-            //    item.BlogAuthor = reqModel.BlogAuthor;
-            //}
+            if (!string.IsNullOrEmpty(reqModel.BlogAuthor))
+            {
+                item.BlogAuthor = reqModel.BlogAuthor;
+            }
 
-            //if (!string.IsNullOrEmpty(reqModel.BlogContent))
-            //{
-            //    item.BlogContent = reqModel.BlogContent;
-            //}
+            if (!string.IsNullOrEmpty(reqModel.BlogContent))
+            {
+                item.BlogContent = reqModel.BlogContent;
+            }
 
             var result = collection.Update(item);
             db.Dispose();
