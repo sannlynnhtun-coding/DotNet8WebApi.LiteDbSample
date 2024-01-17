@@ -1,4 +1,4 @@
-﻿using DotNet8WebApi.LiteDbSample.Models;
+﻿using DotNet8WebApi.LiteDbSample.Models.Blog;
 using DotNet8WebApi.LiteDbSample.Services;
 using LiteDB;
 using Microsoft.AspNetCore.Http;

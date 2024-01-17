@@ -1,6 +1,5 @@
 ﻿using DotNet8WebApi.LiteDbSample.Models.Blog;
 using DotNet8WebApi.LiteDbSample.Services;
-using LiteDB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,31 +7,31 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogV2Controller : ControllerBase
+    public class BlogV3Controller : ControllerBase
     {
-        private readonly LiteDbV2Service _liteDbService;
+        private readonly QuickLiteDB _quickLiteDB;
 
-        public BlogV2Controller(LiteDbV2Service liteDbService)
+        public BlogV3Controller(QuickLiteDB quickLiteDB)
         {
-            _liteDbService = liteDbService;
+            _quickLiteDB = quickLiteDB;
         }
 
         [Route("Get")]
         [HttpGet]
         public IActionResult Get()
         {
-            var lst = _liteDbService.Blog.FindAll().ToList();
+            var lst = _quickLiteDB.List<BlogModel>("Blog");
             //_liteDbService.Dispose();
             return Ok(lst);
         }
 
-        [HttpGet("Id")]
-        public IActionResult GetById(string id)
-        {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
-            //_liteDbService.Dispose();
-            return Ok(item);
-        }
+        //[HttpGet("Id")]
+        //public IActionResult GetById(string id)
+        //{
+        //    var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
+        //    //_liteDbService.Dispose();
+        //    return Ok(item);
+        //}
 
         [HttpPost]
         public IActionResult Create()
@@ -44,7 +43,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 BlogAuthor = "LiteDb",
                 BlogContent = "LiteDb",
             };
-            _liteDbService.Blog.Insert(newBlog);
+            _quickLiteDB.Add(newBlog);
             //_liteDbService.Dispose();
             return Ok(newBlog);
         }

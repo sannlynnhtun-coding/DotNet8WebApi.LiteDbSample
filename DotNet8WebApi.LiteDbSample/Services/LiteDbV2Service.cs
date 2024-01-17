@@ -1,4 +1,5 @@
-﻿using DotNet8WebApi.LiteDbSample.Models;
+﻿using DotNet8WebApi.LiteDbSample.Models.Blog;
+using DotNet8WebApi.LiteDbSample.Models.Catalog;
 using LiteDB;
 
 namespace DotNet8WebApi.LiteDbSample.Services
@@ -24,6 +25,7 @@ namespace DotNet8WebApi.LiteDbSample.Services
         }
 
         public ILiteCollection<BlogModel> Blog => _liteDatabase.GetCollection<BlogModel>("Blog");
+        public ILiteCollection<CatalogModel> Catalog => _liteDatabase.GetCollection<CatalogModel>("Catalog");
 
         public void Dispose() => _liteDatabase.Dispose();
     }

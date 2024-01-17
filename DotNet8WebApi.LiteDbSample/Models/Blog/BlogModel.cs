@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 
-namespace DotNet8WebApi.LiteDbSample.Models
+namespace DotNet8WebApi.LiteDbSample.Models.Blog
 {
     public class BlogModel
     {
