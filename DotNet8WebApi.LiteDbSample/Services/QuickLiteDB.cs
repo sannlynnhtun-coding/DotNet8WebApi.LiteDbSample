@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using System.Linq.Expressions;
 
 namespace DotNet8WebApi.LiteDbSample.Services;
 
@@ -36,25 +37,26 @@ public class QuickLiteDB
     //    return new LiteDatabase($"Filename={DBPath}; Connection=shared");
     //}
 
-    public void Add<T>(T reqModel, string l_TableNameorClassName = null)
+    public BsonValue Add<T>(T reqModel, string l_TableNameorClassName = null)
     {
         if (l_TableNameorClassName == null)
             l_TableNameorClassName = typeof(T).Name;
-        _db.GetCollection<T>(l_TableNameorClassName).Insert(reqModel);
+       return _db.GetCollection<T>(l_TableNameorClassName).Insert(reqModel);
     }
 
-    public void Update<T>(T reqModel, string l_TableNameorClassName = null)
+    public bool Update<T>(T reqModel, string l_TableNameorClassName = null)
     {
         if (l_TableNameorClassName == null)
             l_TableNameorClassName = typeof(T).Name;
-        _db.GetCollection<T>(l_TableNameorClassName).Update(reqModel);
+        return _db.GetCollection<T>(l_TableNameorClassName).Update(reqModel);
+
     }
 
-    public void Delete<T>(int Id, string l_TableNameorClassName = null)
+    public bool Delete<T>(ObjectId Id, string l_TableNameorClassName = null)
     {
         if (l_TableNameorClassName == null)
             l_TableNameorClassName = typeof(T).Name;
-        _db.GetCollection<T>(l_TableNameorClassName).Delete(new BsonValue(Id));
+       return _db.GetCollection<T>(l_TableNameorClassName).Delete(new BsonValue(Id));
     }
 
     public List<T> List<T>(string l_TableNameorClassName = null)
@@ -69,4 +71,15 @@ public class QuickLiteDB
         List<T> _list = lst.FindAll().ToList();
         return _list;
     }
+    public T GetById<T>(Expression<Func<T, bool>> condition, string l_TableNameorClassName = null)
+    {
+        ILiteCollection<T> lst;
+        if (l_TableNameorClassName != null)
+            lst = _db.GetCollection<T>(l_TableNameorClassName);
+        else
+            lst = _db.GetCollection<T>();
+        var item = lst.Find(condition).FirstOrDefault();
+        return item;
+    }
 }
+
