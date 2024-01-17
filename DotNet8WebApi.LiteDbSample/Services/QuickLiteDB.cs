@@ -11,14 +11,15 @@ public class QuickLiteDB
     {
         _db = db;
     }
-    public BsonValue Add<T>(T reqModel, string tableOrClassName = null)
+
+    public BsonValue Add<T>(T reqModel, string tableOrClassName)
     {
         if (tableOrClassName == null)
             tableOrClassName = typeof(T).Name;
        return _db.GetCollection<T>(tableOrClassName).Insert(reqModel);
     }
 
-    public bool Update<T>(T reqModel, string tableOrClassName = null)
+    public bool Update<T>(T reqModel, string tableOrClassName)
     {
         if (tableOrClassName == null)
             tableOrClassName = typeof(T).Name;
@@ -26,14 +27,14 @@ public class QuickLiteDB
 
     }
 
-    public bool Delete<T>(ObjectId Id, string tableOrClassName = null)
+    public bool Delete<T>(ObjectId Id, string tableOrClassName)
     {
         if (tableOrClassName == null)
             tableOrClassName = typeof(T).Name;
        return _db.GetCollection<T>(tableOrClassName).Delete(new BsonValue(Id));
     }
 
-    public List<T> List<T>(string tableOrClassName = null)
+    public List<T> List<T>(string tableOrClassName)
     {
         if (tableOrClassName == null)
             tableOrClassName = typeof(T).Name;
@@ -45,7 +46,8 @@ public class QuickLiteDB
         List<T> _list = lst.FindAll().ToList();
         return _list;
     }
-    public T GetById<T>(Expression<Func<T, bool>> condition, string tableOrClassName = null)
+
+    public T GetById<T>(Expression<Func<T, bool>> condition, string tableOrClassName)
     {
         ILiteCollection<T> lst;
         if (tableOrClassName != null)
