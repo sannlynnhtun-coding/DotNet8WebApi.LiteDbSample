@@ -17,20 +17,17 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             _liteDbService = liteDbService;
         }
 
-        [Route("Get")]
         [HttpGet]
         public IActionResult Get()
         {
             var lst = _liteDbService.Blog.FindAll().ToList();
-            //_liteDbService.Dispose();
             return Ok(lst);
         }
 
-        [HttpGet("Id")]
+        [HttpGet("{id}")]
         public IActionResult GetById(string id)
         {
             var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
-            //_liteDbService.Dispose();
             return Ok(item);
         }
 
@@ -45,11 +42,10 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 BlogContent = "LiteDb",
             };
             _liteDbService.Blog.Insert(newBlog);
-            //_liteDbService.Dispose();
             return Ok(newBlog);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Put(string id, BlogModel reqModel)
         {
             var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
@@ -59,11 +55,10 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
             item.BlogContent = reqModel.BlogContent;
 
             var result = _liteDbService.Blog.Update(item);
-            //_liteDbService.Dispose();
             return Ok();
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         public IActionResult Patch(string id, BlogRequestModel reqModel)
         {
             var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
@@ -72,19 +67,17 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 item.BlogTitle = reqModel.BlogTitle;
             }
 
-            //if (!string.IsNullOrEmpty(reqModel.BlogAuthor))
-            //{
-            //    item.BlogAuthor = reqModel.BlogAuthor;
-            //}
+            if (!string.IsNullOrEmpty(reqModel.BlogAuthor))
+            {
+                item.BlogAuthor = reqModel.BlogAuthor;
+            }
 
-            //if (!string.IsNullOrEmpty(reqModel.BlogContent))
-            //{
-            //    item.BlogContent = reqModel.BlogContent;
-            //}
+            if (!string.IsNullOrEmpty(reqModel.BlogContent))
+            {
+                item.BlogContent = reqModel.BlogContent;
+            }
 
             var result = _liteDbService.Blog.Update(item);
-            //_liteDbService.Dispose();
-
             return Ok();
         }
 
@@ -93,7 +86,6 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         {
             var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
             var result = _liteDbService.Blog.Delete(item.Id);
-            //_liteDbService.Dispose();
             return Ok();
         }
     }

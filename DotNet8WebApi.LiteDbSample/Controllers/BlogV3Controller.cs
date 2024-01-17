@@ -9,32 +9,29 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
     [ApiController]
     public class BlogV3Controller : ControllerBase
     {
-        private readonly LiteDbV3Service _quickLiteDB;
-        private readonly string _tablename = "Blog";
+        private readonly LiteDbV3Service _liteDbV3Service;
+        private readonly string _tableName = "Blog";
 
-        public BlogV3Controller(LiteDbV3Service quickLiteDB)
+        public BlogV3Controller(LiteDbV3Service liteDbV3Service)
         {
-            _quickLiteDB = quickLiteDB;
+            _liteDbV3Service = liteDbV3Service;
         }
 
-        [Route("Get")]
         [HttpGet]
         public IActionResult Get()
         {
-            var lst = _quickLiteDB.List<BlogModel>(_tablename);
-            //_liteDbService.Dispose();
+            var lst = _liteDbV3Service.List<BlogModel>(_tableName);
             return Ok(lst);
         }
 
-        [HttpGet("Id")]
+        [HttpGet("{id}")]
         public IActionResult GetById(string id)
         {
-            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
+            var item = _liteDbV3Service.GetById<BlogModel>(x => x.BlogId == id, _tableName);
             if (item == null)
             {
                 return NotFound("No Data Found.");
             }
-            //_liteDbService.Dispose();
             return Ok(item);
         }
 
@@ -48,29 +45,27 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 BlogAuthor = "LiteDb",
                 BlogContent = "LiteDb",
             };
-            _quickLiteDB.Add(newBlog, _tablename);
-            //_liteDbService.Dispose();
+            _liteDbV3Service.Add(newBlog, _tableName);
             return Ok(newBlog);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Put(string id, BlogRequestModel reqModel)
         {
-            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
+            var item = _liteDbV3Service.GetById<BlogModel>(x => x.BlogId == id, _tableName);
 
             item.BlogTitle = reqModel.BlogTitle;
             item.BlogAuthor = reqModel.BlogAuthor;
             item.BlogContent = reqModel.BlogContent;
 
-            var result = _quickLiteDB.Update(item, _tablename);
-            //_liteDbService.Dispose();
+            var result = _liteDbV3Service.Update(item, _tableName);
             return Ok(result);
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         public IActionResult Patch(string id, BlogRequestModel reqModel)
         {
-            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
+            var item = _liteDbV3Service.GetById<BlogModel>(x => x.BlogId == id, _tableName);
 
             if (!string.IsNullOrEmpty(reqModel.BlogTitle))
             {
@@ -87,18 +82,15 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 item.BlogContent = reqModel.BlogContent;
             }
 
-            var result = _quickLiteDB.Update(item , _tablename);
-            //_liteDbService.Dispose();
-
+            var result = _liteDbV3Service.Update(item , _tableName);
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
-            var result = _quickLiteDB.Delete<BlogModel>(item.Id!, _tablename);
-            //_liteDbService.Dispose();
+            var item = _liteDbV3Service.GetById<BlogModel>(x => x.BlogId == id, _tableName);
+            var result = _liteDbV3Service.Delete<BlogModel>(item.Id!, _tableName);
             return Ok(result);
         }
     }
