@@ -10,6 +10,7 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
     public class BlogV3Controller : ControllerBase
     {
         private readonly QuickLiteDB _quickLiteDB;
+        private readonly string _tablename = "Blog";
 
         public BlogV3Controller(QuickLiteDB quickLiteDB)
         {
@@ -20,18 +21,22 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var lst = _quickLiteDB.List<BlogModel>("Blog");
+            var lst = _quickLiteDB.List<BlogModel>(_tablename);
             //_liteDbService.Dispose();
             return Ok(lst);
         }
 
-        //[HttpGet("Id")]
-        //public IActionResult GetById(string id)
-        //{
-        //    var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
-        //    //_liteDbService.Dispose();
-        //    return Ok(item);
-        //}
+        [HttpGet("Id")]
+        public IActionResult GetById(string id)
+        {
+            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
+            if (item == null)
+            {
+                return NotFound("No Data Found.");
+            }
+            //_liteDbService.Dispose();
+            return Ok(item);
+        }
 
         [HttpPost]
         public IActionResult Create()
@@ -43,57 +48,58 @@ namespace DotNet8WebApi.LiteDbSample.Controllers
                 BlogAuthor = "LiteDb",
                 BlogContent = "LiteDb",
             };
-            _quickLiteDB.Add(newBlog);
+            _quickLiteDB.Add(newBlog, _tablename);
             //_liteDbService.Dispose();
             return Ok(newBlog);
         }
 
         [HttpPut]
-        public IActionResult Put(string id, BlogModel reqModel)
+        public IActionResult Put(string id, BlogRequestModel reqModel)
         {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
+            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
 
             item.BlogTitle = reqModel.BlogTitle;
             item.BlogAuthor = reqModel.BlogAuthor;
             item.BlogContent = reqModel.BlogContent;
 
-            var result = _liteDbService.Blog.Update(item);
+            var result = _quickLiteDB.Update(item, _tablename);
             //_liteDbService.Dispose();
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPatch]
         public IActionResult Patch(string id, BlogRequestModel reqModel)
         {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
+            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
+
             if (!string.IsNullOrEmpty(reqModel.BlogTitle))
             {
                 item.BlogTitle = reqModel.BlogTitle;
             }
 
-            //if (!string.IsNullOrEmpty(reqModel.BlogAuthor))
-            //{
-            //    item.BlogAuthor = reqModel.BlogAuthor;
-            //}
+            if (!string.IsNullOrEmpty(reqModel.BlogAuthor))
+            {
+                item.BlogAuthor = reqModel.BlogAuthor;
+            }
 
-            //if (!string.IsNullOrEmpty(reqModel.BlogContent))
-            //{
-            //    item.BlogContent = reqModel.BlogContent;
-            //}
+            if (!string.IsNullOrEmpty(reqModel.BlogContent))
+            {
+                item.BlogContent = reqModel.BlogContent;
+            }
 
-            var result = _liteDbService.Blog.Update(item);
+            var result = _quickLiteDB.Update(item , _tablename);
             //_liteDbService.Dispose();
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpDelete]
         public IActionResult Delete(string id)
         {
-            var item = _liteDbService.Blog.Find(x => x.BlogId == id).FirstOrDefault();
-            var result = _liteDbService.Blog.Delete(item.Id);
+            var item = _quickLiteDB.GetById<BlogModel>(x => x.BlogId == id, _tablename);
+            var result = _quickLiteDB.Delete<BlogModel>(item.Id!, _tablename);
             //_liteDbService.Dispose();
-            return Ok();
+            return Ok(result);
         }
     }
 }
