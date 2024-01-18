@@ -16,7 +16,7 @@ builder.Services.AddScoped(n =>
     var _folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LiteDb");
     Directory.CreateDirectory(_folderPath);
 
-    var _filePath = Path.Combine(_folderPath, "Blog.db");
+    var _filePath = Path.Combine(_folderPath, builder.Configuration.GetSection("DbFileName").Value!);
     return new LiteDatabase(_filePath);
 });
 
